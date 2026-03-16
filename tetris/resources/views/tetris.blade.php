@@ -10,8 +10,11 @@
 
 <h1>Tetris Game</h1>
 
-<livewire:tetris-game />
 
+<livewire:tetris-game />
 @livewireScripts
+<script src="{{ asset('js/tetris.js') }}"></script>
+
+
 </body>
 </html>
