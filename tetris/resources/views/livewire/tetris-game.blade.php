@@ -1,8 +1,11 @@
 <div x-data="tetris()" x-init="init()" @keydown.window="handleKey($event)" class="outline-none">
 
-
     <div class="flex gap-8 items-start justify-center mt-8">
-
+         {{-- Held Piece Preview --}}
+            <div class="bg-gray-800 rounded-lg p-4">
+                <p class="text-gray-400 text-xs uppercase tracking-widest mb-2">Held</p>
+                <canvas x-ref="heldCanvas" width="120" height="120" class="bg-gray-900"></canvas>
+            </div>
         {{-- Board Canvas --}}
         <div class="relative">
             <canvas x-ref="canvas" width="300" height="600"
@@ -40,6 +43,7 @@
                 <p>↓ &nbsp;&nbsp;&nbsp;&nbsp; Soft drop</p>
                 <p>Space Hard drop</p>
                 <p>P &nbsp;&nbsp;&nbsp;&nbsp; Pause</p>
+                <p>C &nbsp;&nbsp;&nbsp;&nbsp; Hold</p>
             </div>
 
             {{-- Next Piece Preview --}}

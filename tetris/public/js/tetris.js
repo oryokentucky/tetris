@@ -26,6 +26,9 @@ function tetris() {
         dropInterval: 500,
         lastDrop: 0,
         animFrame: null,
+        heldpiece:null,
+        canhold:true,
+        temp:null,
 
         init() {
             this.restart();
@@ -64,6 +67,28 @@ function tetris() {
 
             this.drawNext();
         },
+        OnHoldButtonPress(){
+            if(!this.canhold)return;
+
+            if(this.heldpiece==null){
+                this.heldpiece=this.currentPiece;
+                this.spawnPiece();
+            }else{
+                let temp =this.currentPiece;
+                this.currentPiece=this.heldpiece;
+                this.heldpiece=temp;
+            }
+            //Set Piece Back to spawn position
+            this.pieceX = Math.floor((COLS - this.currentPiece.shape[0].length) / 2);
+            this.pieceY = 0;
+            this.canhold=false;
+            this.lastDrop = performance.now();
+            this.drawHeld();
+
+        },
+        OnPieceLock(){
+            this.canhold=true;
+        },
 
         collision(shape, ox, oy) {
             for (let y = 0; y < shape.length; y++) {
@@ -95,6 +120,7 @@ function tetris() {
                     }
                 }
             }
+            this.OnPieceLock();
             this.clearLines();
             this.spawnPiece();
         },
@@ -169,6 +195,8 @@ function tetris() {
                 ' ':          () => this.hardDrop(),
                 'p':          () => { this.paused = !this.paused; this.lastDrop = performance.now(); },
                 'P':          () => { this.paused = !this.paused; this.lastDrop = performance.now(); },
+                'c':          () => this.OnHoldButtonPress(),
+                'C':          () => this.OnHoldButtonPress(),
             };
             if (actions[e.key]) {
                 e.preventDefault();
@@ -274,5 +302,20 @@ function tetris() {
                 }
             }
         },
+        drawHeld() {
+            const canvas = this.$refs.heldCanvas;
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if(!this.heldpiece)return;
+            const { shape, color } = this.heldpiece;
+            const offX = Math.floor((4 - shape[0].length) / 2);
+            const offY = Math.floor((4 - shape.length) / 2);
+            for (let y = 0; y < shape.length; y++) {
+                for (let x = 0; x < shape[y].length; x++) {
+                    if (shape[y][x]) this.drawBlock(ctx, offX + x, offY + y, color);
+                }
+            }
     }
+}
 }
